@@ -22,4 +22,4 @@ spring:
 app:
   exchange-rate-api:
     url: https://v6.exchangerate-api.com/v6
-    key: ede3c629785053608ea8887a
+    key: configure your key
