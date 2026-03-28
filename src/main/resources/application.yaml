@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: Real-Time Currency Converter
+  datasource:
+    url: jdbc:h2:mem:currency_db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: true
+  cache:
+    type: caffeine
+    cache-names: exchange-rates, supported-currencies
+    caffeine:
+      spec: expireAfterWrite=6h
+
+app:
+  exchange-rate-api:
+    url: https://v6.exchangerate-api.com/v6
+    key: ede3c629785053608ea8887a

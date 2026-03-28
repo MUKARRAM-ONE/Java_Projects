@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Crypto Converter')}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: nav}"></div>
+    <div class="container">
+        <div class="card glass-card" style="max-width: 650px; margin: auto; border-top: 4px solid #f59e0b;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="background: #fffbeb; color: #d97706; padding: 0.5rem; border-radius: 8px;">
+                        <i data-lucide="bitcoin" style="width: 24px; height: 24px;"></i>
+                    </div>
+                    <h2 style="font-weight: 800; letter-spacing: -0.02em;">Crypto Converter</h2>
+                </div>
+                <div class="badge" style="background: #fffbeb; color: #d97706; border: 1px solid #fef3c7;">
+                    <i data-lucide="zap" style="width: 12px; margin-right: 4px;"></i> Binance Live
+                </div>
+            </div>
+            
+            <form th:action="@{/crypto-convert}" method="post">
+                <div class="input-group">
+                    <label>Amount to Convert</label>
+                    <input type="number" step="any" name="amount" th:value="${amount}" required 
+                           style="font-size: 1.25rem; font-weight: 600; padding: 1rem;">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: end; margin-bottom: 2rem;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>From Asset</label>
+                        <select name="from" id="fromCrypto" style="font-weight: 600; padding: 0.875rem;">
+                            <option th:each="symbol : ${cryptos}" 
+                                    th:value="${symbol}" 
+                                    th:text="${symbol}" 
+                                    th:selected="${from == symbol}"></option>
+                        </select>
+                    </div>
+                    
+                    <button type="button" onclick="swapCrypto()" class="btn btn-outline" 
+                            style="width: 44px; height: 44px; border-radius: 50%; padding: 0; margin-bottom: 2px;">
+                        <i data-lucide="repeat"></i>
+                    </button>
+                    
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>To Asset</label>
+                        <select name="to" id="toCrypto" style="font-weight: 600; padding: 0.875rem;">
+                            <option th:each="symbol : ${cryptos}" 
+                                    th:value="${symbol}" 
+                                    th:text="${symbol}" 
+                                    th:selected="${to == symbol}"></option>
+                            <option value="USDT" th:selected="${to == 'USDT'}">USDT (Tether)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%; height: 56px; font-size: 1.1rem; background: #f59e0b; box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.3);">
+                    Check Live Price
+                </button>
+            </form>
+
+            <div th:if="${showResult}" style="margin-top: 2.5rem; padding: 2rem; background: #fffdf5; border-radius: 16px; border: 1px solid #fef3c7; text-align: center;">
+                <p style="font-size: 0.875rem; color: #b45309; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase;">Estimated Value</p>
+                <div style="font-size: 2.25rem; font-weight: 800; letter-spacing: -0.03em; color: #92400e;">
+                    <span th:text="${amount}"></span> <span th:text="${from}" style="font-size: 1.25rem; color: #b45309;"></span>
+                    <i data-lucide="move-right" style="width: 24px; vertical-align: middle; margin: 0 0.5rem; color: #f59e0b;"></i>
+                    <span th:text="${#numbers.formatDecimal(result, 1, 8)}"></span> 
+                    <span th:text="${to}" style="font-size: 1.25rem; color: #b45309;"></span>
+                </div>
+                <div style="margin-top: 1rem; color: #b45309; font-size: 0.875rem;">
+                    Data fetched from Binance Spot Market.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function swapCrypto() {
+            const from = document.getElementById('fromCrypto');
+            const to = document.getElementById('toCrypto');
+            const temp = from.value;
+            from.value = to.value;
+            to.value = temp;
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

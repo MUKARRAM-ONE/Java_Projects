@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Unit Converter')}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: nav}"></div>
+    <div class="container">
+        <div class="card glass-card" style="max-width: 650px; margin: auto; border-top: 4px solid #10b981;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
+                <div style="background: #ecfdf5; color: #10b981; padding: 0.5rem; border-radius: 8px;">
+                    <i data-lucide="ruler" style="width: 24px; height: 24px;"></i>
+                </div>
+                <h2 style="font-weight: 800; letter-spacing: -0.02em;">Unit Converter</h2>
+            </div>
+
+            <form th:action="@{/unit-convert}" method="post" id="unitForm">
+                <div class="input-group">
+                    <label>Measurement Category</label>
+                    <select name="type" id="unitType" onchange="updateUnits()" required style="font-weight: 600; background: #f8fafc;">
+                        <option value="length" th:selected="${type == 'length'}">Length & Distance</option>
+                        <option value="volume" th:selected="${type == 'volume'}">Volume & Capacity</option>
+                        <option value="area" th:selected="${type == 'area'}">Area</option>
+                        <option value="time" th:selected="${type == 'time'}">Time</option>
+                        <option value="temperature" th:selected="${type == 'temperature'}">Temperature</option>
+                        <option value="weight" th:selected="${type == 'weight'}">Weight & Mass</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label>Value</label>
+                    <input type="number" step="any" name="amount" th:value="${amount}" required 
+                           style="font-size: 1.25rem; font-weight: 600; padding: 1rem;">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>From</label>
+                        <select name="from" id="fromUnit" style="font-weight: 500;"></select>
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>To</label>
+                        <select name="to" id="toUnit" style="font-weight: 500;"></select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%; height: 56px; font-size: 1.1rem; background: #10b981; box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);">
+                    Calculate Conversion
+                </button>
+            </form>
+
+            <div th:if="${showResult}" style="margin-top: 2.5rem; padding: 2rem; background: #f0fdf4; border-radius: 16px; border: 1px solid #dcfce7; text-align: center;">
+                <p style="font-size: 0.875rem; color: #15803d; font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase;">Result</p>
+                <div style="font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; color: #166534;">
+                    <span th:text="${amount}"></span> <span th:text="${from}" style="font-size: 1.1rem; color: #15803d; opacity: 0.8;"></span>
+                    <i data-lucide="equal" style="width: 20px; vertical-align: middle; margin: 0 0.5rem; color: #10b981;"></i>
+                    <span th:text="${#numbers.formatDecimal(result, 1, 4)}"></span> 
+                    <span th:text="${to}" style="font-size: 1.1rem; color: #15803d; opacity: 0.8;"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        const units = {
+            length: { mm: 'Millimeter', cm: 'Centimeter', m: 'Meter', km: 'Kilometer', in: 'Inch', ft: 'Foot', yd: 'Yard', mi: 'Mile' },
+            volume: { ml: 'Milliliter', l: 'Liter', gal: 'Gallon', qt: 'Quart' },
+            area: { sqmm: 'Sq. Millimeter', sqcm: 'Sq. Centimeter', sqm: 'Sq. Meter', sqkm: 'Sq. Kilometer', acre: 'Acre' },
+            time: { sec: 'Second', min: 'Minute', hr: 'Hour', day: 'Day' },
+            temperature: { c: 'Celsius', f: 'Fahrenheit', k: 'Kelvin' },
+            weight: { mg: 'Milligram', g: 'Gram', kg: 'Kilogram', oz: 'Ounce', lb: 'Pound' }
+        };
+
+        const currentType = /*[[${type}]]*/ 'length';
+        const currentFrom = /*[[${from}]]*/ '';
+        const currentTo = /*[[${to}]]*/ '';
+
+        function updateUnits() {
+            const type = document.getElementById('unitType').value;
+            const fromSelect = document.getElementById('fromUnit');
+            const toSelect = document.getElementById('toUnit');
+            
+            fromSelect.innerHTML = '';
+            toSelect.innerHTML = '';
+            
+            for (const [code, name] of Object.entries(units[type])) {
+                fromSelect.add(new Option(name, code));
+                toSelect.add(new Option(name, code));
+            }
+
+            if (type === currentType) {
+                if (currentFrom) fromSelect.value = currentFrom;
+                if (currentTo) toSelect.value = currentTo;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateUnits();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

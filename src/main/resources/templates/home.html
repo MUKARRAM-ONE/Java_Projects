@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Home')}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: nav}"></div>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="card glass-card" style="text-align: center; padding: 5rem 2rem; background: linear-gradient(135deg, #f5f7ff 0%, #ffffff 100%); border: none;">
+            <div class="badge" style="background: #e0e7ff; color: #4338ca; margin-bottom: 1.5rem;">Trusted by users worldwide</div>
+            <h1 style="font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.04em; font-weight: 800;">
+                One platform for all your <br>
+                <span style="color: var(--primary);">conversions.</span>
+            </h1>
+            <p style="font-size: 1.25rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 2.5rem;">
+                Get precise real-time exchange rates, cryptocurrency prices, and unit conversions in a single, beautiful interface.
+            </p>
+            <div th:if="${#authorization.expression('isAnonymous()')}" style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="/register" class="btn" style="padding: 1rem 2rem; font-size: 1.125rem;">Create Free Account</a>
+                <a href="/login" class="btn btn-outline" style="padding: 1rem 2rem; font-size: 1.125rem;">Sign In</a>
+            </div>
+            <div th:if="${#authorization.expression('isAuthenticated()')}">
+                <a href="/dashboard" class="btn" style="padding: 1rem 2rem; font-size: 1.125rem;">
+                    <i data-lucide="arrow-right"></i> Go to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Features Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <!-- Currency Card -->
+            <div class="card" style="transition: transform 0.3s ease;">
+                <div style="width: 48px; height: 48px; background: #e0e7ff; color: #4f46e5; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                    <i data-lucide="coins"></i>
+                </div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 700;">Live Currencies</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                    Convert between 160+ world currencies with up-to-the-minute exchange rates and historical trends.
+                </p>
+                <a href="/converter" style="color: var(--primary); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+                    Start Converting <i data-lucide="chevron-right" style="width:16px"></i>
+                </a>
+            </div>
+
+            <!-- Crypto Card -->
+            <div class="card" style="transition: transform 0.3s ease;">
+                <div style="width: 48px; height: 48px; background: #fef3c7; color: #d97706; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                    <i data-lucide="bitcoin"></i>
+                </div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 700;">Crypto Assets</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                    Real-time data for Bitcoin, Ethereum, and major tokens powered by the Binance API.
+                </p>
+                <a href="/crypto-converter" style="color: var(--primary); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+                    Track Prices <i data-lucide="chevron-right" style="width:16px"></i>
+                </a>
+            </div>
+
+            <!-- Units Card -->
+            <div class="card" style="transition: transform 0.3s ease;">
+                <div style="width: 48px; height: 48px; background: #dcfce7; color: #16a34a; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+                    <i data-lucide="ruler"></i>
+                </div>
+                <h2 style="font-size: 1.5rem; margin-bottom: 1rem; font-weight: 700;">Unit Converter</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                    A comprehensive tool for length, weight, temperature, area, volume, and time conversions.
+                </p>
+                <a href="/unit-converter" style="color: var(--primary); font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
+                    Use Units Tool <i data-lucide="chevron-right" style="width:16px"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

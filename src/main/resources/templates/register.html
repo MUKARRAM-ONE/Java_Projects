@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Register - Real-Time Currency Converter')}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: nav}"></div>
+    <div class="container">
+        <div class="card" style="max-width: 400px; margin: auto;">
+            <h2 style="text-align: center;">Create Account</h2>
+            <form th:action="@{/register}" th:object="${user}" method="post">
+                <label>Full Name</label>
+                <input type="text" th:field="*{fullName}" required>
+                <label>Username</label>
+                <input type="text" th:field="*{username}" required>
+                <label>Password</label>
+                <input type="password" th:field="*{password}" required>
+                <button type="submit" class="btn" style="width: 100%;">Create Account</button>
+            </form>
+            <p style="text-align: center; margin-top: 1rem;">Already have an account? <a href="/login">Login</a></p>
+        </div>
+    </div>
+</body>
+</html>
+   </div>
+</body>
+</html>

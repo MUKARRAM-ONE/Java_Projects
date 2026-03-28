@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Currency Converter')}"></head>
+<body>
+    <div th:replace="~{fragments/layout :: nav}"></div>
+    <div class="container">
+        <div class="card glass-card" style="max-width: 650px; margin: auto;">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem;">
+                <div style="background: #e0e7ff; color: #4f46e5; padding: 0.5rem; border-radius: 8px;">
+                    <i data-lucide="refresh-cw" style="width: 24px; height: 24px;"></i>
+                </div>
+                <h2 style="font-weight: 800; letter-spacing: -0.02em;">Currency Converter</h2>
+            </div>
+
+            <form th:action="@{/convert}" method="post">
+                <div class="input-group">
+                    <label>Enter Amount</label>
+                    <div style="position: relative;">
+                        <input type="number" step="0.01" name="amount" th:value="${amount}" required 
+                               style="padding-left: 2.5rem; font-size: 1.25rem; font-weight: 600;">
+                        <span style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-weight: 600;">$</span>
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1rem; align-items: end; margin-bottom: 2rem;">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>From</label>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; background: #fff; border: 1px solid var(--border); padding: 0.5rem 0.75rem; border-radius: 10px;">
+                            <img id="fromFlag" src="" alt="" style="width: 28px; height: 20px; object-fit: cover; border-radius: 3px; border: 1px solid #eee;">
+                            <select name="from" id="fromCurrency" onchange="updateFlags()" style="border: none; padding: 0; margin: 0; font-weight: 600; background: transparent;">
+                                <option th:each="curr : ${currencies}" 
+                                        th:value="${curr.code}" 
+                                        th:data-flag="${curr.flagUrl}"
+                                        th:text="${curr.code}" 
+                                        th:selected="${from == curr.code}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="button" onclick="swapCurrencies()" class="btn btn-outline" 
+                            style="width: 44px; height: 44px; border-radius: 50%; padding: 0; margin-bottom: 2px;">
+                        <i data-lucide="repeat"></i>
+                    </button>
+                    
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label>To</label>
+                        <div style="display: flex; align-items: center; gap: 0.75rem; background: #fff; border: 1px solid var(--border); padding: 0.5rem 0.75rem; border-radius: 10px;">
+                            <img id="toFlag" src="" alt="" style="width: 28px; height: 20px; object-fit: cover; border-radius: 3px; border: 1px solid #eee;">
+                            <select name="to" id="toCurrency" onchange="updateFlags()" style="border: none; padding: 0; margin: 0; font-weight: 600; background: transparent;">
+                                <option th:each="curr : ${currencies}" 
+                                        th:value="${curr.code}" 
+                                        th:data-flag="${curr.flagUrl}"
+                                        th:text="${curr.code}" 
+                                        th:selected="${to == curr.code}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%; height: 56px; font-size: 1.1rem; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);">
+                    Convert Currencies
+                </button>
+            </form>
+
+            <div th:if="${showResult}" style="margin-top: 2.5rem; padding: 2rem; background: linear-gradient(145deg, #ffffff, #f8fafc); border-radius: 16px; border: 1px solid var(--border); text-align: center; box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.05);">
+                <p style="font-size: 0.875rem; color: var(--text-muted); font-weight: 600; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em;">Conversion Result</p>
+                <div style="font-size: 2.25rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text-main);">
+                    <span th:text="${amount}"></span> <span th:text="${from}" style="font-size: 1.25rem; color: var(--text-muted);"></span>
+                    <i data-lucide="arrow-right" style="width: 24px; vertical-align: middle; margin: 0 0.5rem; color: var(--primary);"></i>
+                    <span th:text="${#numbers.formatDecimal(result, 1, 2)}" style="color: var(--primary);"></span> 
+                    <span th:text="${to}" style="font-size: 1.25rem; color: var(--text-muted);"></span>
+                </div>
+                <div style="margin-top: 1rem; color: var(--text-muted); font-size: 0.875rem; display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
+                    <i data-lucide="info" style="width: 14px;"></i> Live mid-market exchange rates.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateFlags() {
+            const fromSelect = document.getElementById('fromCurrency');
+            const toSelect = document.getElementById('toCurrency');
+            const fromFlag = document.getElementById('fromFlag');
+            const toFlag = document.getElementById('toFlag');
+            
+            fromFlag.src = fromSelect.options[fromSelect.selectedIndex].getAttribute('data-flag');
+            toFlag.src = toSelect.options[toSelect.selectedIndex].getAttribute('data-flag');
+        }
+
+        function swapCurrencies() {
+            const from = document.getElementById('fromCurrency');
+            const to = document.getElementById('toCurrency');
+            const temp = from.value;
+            from.value = to.value;
+            to.value = temp;
+            updateFlags();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateFlags();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
