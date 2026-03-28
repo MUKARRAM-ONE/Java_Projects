@@ -54,7 +54,8 @@ The API key is already configured in `src/main/resources/application.yaml`:
 ```yaml
 app:
   exchange-rate-api:
-    key: ede3c629785053608ea8887a
+    key: put your api key 
+    key is avilable at https://www.exchangerate-api.com/
 ```
 
 ### Running the App
